@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductTypeForm;
 use App\Repository\ProductRepository;
+use App\Services\UploadImage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/admin/add/product', name: 'app_product_add')]
-    public function add(Request $request, EntityManagerInterface $em): Response
+    public function add(Request $request, EntityManagerInterface $em, UploadImage $uploadImage): Response
     {
         $product = new Product();
         $form = $this->createForm(ProductTypeForm::class, $product);
@@ -32,11 +33,8 @@ final class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
-                $newFilename = \uniqid() . '.' . $imageFile->guessExtension();
-                $uploadDir = $this->getParameter('uploads_directory');
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-                $imageFile->move($uploadDir, $newFilename);
-                $product->setImage($newFilename);
+                $fileName = $uploadImage->uploadImageFile($imageFile);
+                $product->setImage($fileName);
             }
             $em->persist($product);
             $em->flush();
