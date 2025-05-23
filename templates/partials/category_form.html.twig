@@ -1,0 +1,20 @@
+{{ form_start(form) }}
+
+{% for field in form %}
+  {% if field.vars.name != '_token' %}
+    <div class="mb-6">
+      {{ form_label(field) }}
+      {{ form_widget(field) }}
+      {% if (field.vars.errors|length) > 0 %}
+        <div class="text-red-600 text-sm mt-1">{{ form_errors(field) }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endfor %}
+
+<div class="flex items-center gap-4">
+  <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-blue-600 transition">{{ button_text }}</button>
+  <a href="{{ path('app_category') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition">Back to list</a>
+</div>
+
+{{ form_end(form) }}

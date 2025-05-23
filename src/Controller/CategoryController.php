@@ -22,6 +22,14 @@ final class CategoryController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/category/{id}', name: 'app_category_show')]
+    public function show(Category $category): Response
+    {
+        return $this->render('admin/category/show.html.twig', [
+            'category' => $category
+        ]);
+    }
+
     #[Route('/admin/add/category', name: 'app_category_add')]
     public function add(Request $request, EntityManagerInterface $em): Response
     {
@@ -36,6 +44,14 @@ final class CategoryController extends AbstractController
         }
         return $this->render('admin/category/new.html.twig', [
             'form' => $form
+        ]);
+    }
+
+    #[Route('/admin/edit/category/{id}', name: 'app_category_edit')]
+    public function edit(Category $category): Response
+    {
+        return $this->render('admin/category/edit.html.twig', [
+            'category' => $category
         ]);
     }
 }
