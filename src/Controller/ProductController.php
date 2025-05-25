@@ -45,7 +45,7 @@ final class ProductController extends AbstractController
             return $this->redirectToRoute('app_product');
         }
 
-        return $this->render('admin/product/form.html.twig', [
+        return $this->render('admin/product/new.html.twig', [
             'form' => $form->createView(),
             'product' => null,
             'button_label' => 'Create Product'
@@ -61,7 +61,7 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/admin/edit/product/{id}', name: 'app_product_edit')]
-    public function edit(Product $product, Request $request, EntityManagerInterface $em, UploadImage $uploadImage): Response
+    public function edit(Product $product, Request $request, EntityManagerInterface $em, UploadImage $imageService): Response
     {
         $originalImage = $product->getImage();
 
@@ -72,9 +72,9 @@ final class ProductController extends AbstractController
             $imageFile = $form->get('imageFile')->getData();
 
             if ($imageFile) {
-                $fileName = $uploadImage->uploadImageFile($imageFile);
+                $fileName = $imageService->uploadImageFile($imageFile);
                 $product->setImage($fileName);
-                //TODO borrar imagen vieja
+                $imageService->deleteImageFile($originalImage);
             } else {
                 $product->setImage($originalImage);
             }
@@ -88,7 +88,23 @@ final class ProductController extends AbstractController
         return $this->render('admin/product/new.html.twig', [
             'form' => $form->createView(),
             'product' => $product,
+            'edit' => 'edit',
             'button_label' => 'Update Product'
         ]);
+    }
+
+    #[Route('/admin/delete/product/{id}', name: 'app_product_delete', methods: ['POST'])]
+    public function delete(Product $product, Request $request, EntityManagerInterface $em, UploadImage $imageService): Response
+    {
+        if (!$this->isCsrfTokenValid('delete_product_' . $product->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF Token');
+            return $this->redirectToRoute('app_product');
+        }
+        $oldImage = $product->getImage();
+        $imageService->deleteImageFile($oldImage);
+        $em->remove($product);
+        $em->flush();
+        $this->addFlash('success', 'Product deleted successfully ');
+        return $this->redirectToRoute('app_product');
     }
 }

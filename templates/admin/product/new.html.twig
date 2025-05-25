@@ -1,14 +1,14 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block title %}
-  {{ product is defined ? 'Edit Product' : 'New Product' }}
+  {{ edit is defined ? 'Edit Product' : 'New Product' }}
 {% endblock %}
 
 {% block body %}
   <div class="min-h-screen bg-gradient-to-br from-blue-100 via-green-100 to-white py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-3xl p-8 sm:p-10 border border-blue-100">
       <h1 class="text-3xl font-bold text-blue-900 mb-6">
-        {{ product is defined ? 'Edit Product' : 'New Product' }}
+        {{ edit is defined ? 'Edit Product' : 'New Product' }}
       </h1>
 
     {% include 'partials/product_form.html.twig' with { 'button_label': 'Save Changes' } %}

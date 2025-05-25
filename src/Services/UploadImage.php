@@ -17,4 +17,14 @@ class UploadImage
         $uploadedFile->move(self::UPLOAD_PATH, $fileName);
         return $fileName;
     }
+    public function deleteImageFile(string $fileName): bool
+    {
+        $filePath = self::UPLOAD_PATH . $fileName;
+
+        if (\file_exists($filePath) && \is_file($filePath)) {
+            return \unlink($filePath);
+        }
+
+        return false;
+    }
 }
