@@ -1,0 +1,40 @@
+{{ form_start(form) }}
+{% for field in form %}
+  {% if field.vars.name != '_token' %}
+    <div class="mb-6">
+      {{ form_label(field) }}
+      <div class="relative">
+        {% if field.vars.name == 'imageFile' %}
+          <div class="mt-4 flex justify-center">
+            {% if product and product.image %}
+              <div class="relative">
+                <img id="imagePreview" src="{{ asset('uploads/' ~ product.image) }}" alt="Current Product Image" class="h-32 w-32 object-cover rounded-md border border-gray-300 shadow-sm mb-4" />
+                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-bl-md">Current</div>
+              </div>
+            {% else %}
+              <img id="imagePreview" class="h-32 w-32 object-cover rounded-md border border-gray-300 shadow-sm mb-4 hidden" />
+            {% endif %}
+          </div>
+          {% if product and product.image %}
+            <p class="text-sm text-gray-600 mb-2">
+              <span class="font-medium">Current image:</span> {{ product.image }}
+              <br />
+              <span class="text-gray-500">Select a new file to replace it, or leave empty to keep current image.</span>
+            </p>
+          {% endif %}
+        {% endif %}
+        {{ form_widget(field) }}
+      </div>
+      {% if (field.vars.errors|length) > 0 %}
+        <p class="text-red-600 text-sm mt-1">{{ form_errors(field) }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endfor %}
+
+<div class="flex items-center gap-4">
+  <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-blue-600 transition">{{ button_label|default('Save Product') }}</button>
+  <a href="{{ path('app_product') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition">Cancel</a>
+</div>
+
+{{ form_end(form) }}

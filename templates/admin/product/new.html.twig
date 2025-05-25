@@ -1,62 +1,18 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block title %}
-  New Product
+  {{ product is defined ? 'Edit Product' : 'New Product' }}
 {% endblock %}
 
 {% block body %}
   <div class="min-h-screen bg-gradient-to-br from-blue-100 via-green-100 to-white py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-3xl p-8 sm:p-10 border border-blue-100">
-      <h1 class="text-3xl font-bold text-blue-900 mb-6">New Product</h1>
+      <h1 class="text-3xl font-bold text-blue-900 mb-6">
+        {{ product is defined ? 'Edit Product' : 'New Product' }}
+      </h1>
 
-      {{ form_start(form) }}
+    {% include 'partials/product_form.html.twig' with { 'button_label': 'Save Changes' } %}
 
-      {% for field in form %}
-        {% if field.vars.name != '_token' %}
-          <div class="mb-6">
-            {{ form_label(field) }}
-            {{ form_widget(field) }}
-
-            {% if field.vars.name == 'image' %}
-              <div class="mt-4">
-                <img id="imagePreview" class="h-32 w-32 object-cover rounded-md border border-gray-300 shadow-sm mb-4 hidden" />
-              </div>
-            {% endif %}
-
-            {% if product is defined and product.image %}
-              <img src="{{ asset('uploads/' ~ product.image) }}" alt="Product Image" class="h-32 w-32 object-cover rounded-md border border-gray-300 shadow-sm mb-4" />
-            {% endif %}
-
-            {% if (field.vars.errors|length) > 0 %}
-              <p class="text-red-600 text-sm mt-1">{{ form_errors(field) }}</p>
-            {% endif %}
-          </div>
-        {% endif %}
-      {% endfor %}
-
-      <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-blue-600 transition">
-        Save Product
-      </button>
-
-      {{ form_end(form) }}
     </div>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const imageInput = document.querySelector("input[type='file']");
-      const previewImage = document.getElementById("imagePreview");
-
-      imageInput.addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (file) {
-          previewImage.src = URL.createObjectURL(file);
-          previewImage.classList.remove("hidden");
-        } else {
-          previewImage.classList.add("hidden");
-          previewImage.src = "";
-        }
-      });
-    });
-  </script>
 {% endblock %}

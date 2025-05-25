@@ -31,19 +31,24 @@ final class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
+            $imageFile = $form->get('imageFile')->getData();
+
             if ($imageFile) {
                 $fileName = $uploadImage->uploadImageFile($imageFile);
                 $product->setImage($fileName);
             }
+
             $em->persist($product);
             $em->flush();
+
             $this->addFlash('success', 'Product created successfully');
             return $this->redirectToRoute('app_product');
         }
 
-        return $this->render('admin/product/new.html.twig', [
-            'form' => $form->createView()
+        return $this->render('admin/product/form.html.twig', [
+            'form' => $form->createView(),
+            'product' => null,
+            'button_label' => 'Create Product'
         ]);
     }
 
@@ -52,6 +57,38 @@ final class ProductController extends AbstractController
     {
         return $this->render('admin/product/show.html.twig', [
             'product' => $product
+        ]);
+    }
+
+    #[Route('/admin/edit/product/{id}', name: 'app_product_edit')]
+    public function edit(Product $product, Request $request, EntityManagerInterface $em, UploadImage $uploadImage): Response
+    {
+        $originalImage = $product->getImage();
+
+        $form = $this->createForm(ProductTypeForm::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                $fileName = $uploadImage->uploadImageFile($imageFile);
+                $product->setImage($fileName);
+                //TODO borrar imagen vieja
+            } else {
+                $product->setImage($originalImage);
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Product updated successfully');
+            return $this->redirectToRoute('app_product');
+        }
+
+        return $this->render('admin/product/new.html.twig', [
+            'form' => $form->createView(),
+            'product' => $product,
+            'button_label' => 'Update Product'
         ]);
     }
 }

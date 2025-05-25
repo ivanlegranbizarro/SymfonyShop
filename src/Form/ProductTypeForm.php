@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Form;
 
 use App\Entity\Category;
@@ -9,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ProductTypeForm extends AbstractType
 {
@@ -37,11 +37,25 @@ class ProductTypeForm extends AbstractType
                 'row_attr' => ['class' => $rowClass],
                 'attr' => ['class' => $inputClass, 'min' => 0.01, 'step' => '0.01', 'type' => 'number'],
             ])
-            ->add('image', FileType::class, [
+            ->add('imageFile', FileType::class, [
                 'label' => 'Product Image',
                 'label_attr' => ['class' => $labelClass],
                 'row_attr' => ['class' => $rowClass],
                 'attr' => ['class' => $inputClass . ' cursor-pointer', 'accept' => 'image/*'],
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image file (JPEG, PNG, GIF, WebP)',
+                    ])
+                ],
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
