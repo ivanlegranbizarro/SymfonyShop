@@ -1,0 +1,38 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}
+  {{ product.name }} Detail
+{% endblock %}
+
+{% block body %}
+  <div class="min-h-screen bg-gradient-to-br from-blue-100 via-green-100 to-white py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-3xl p-8 sm:p-10 border border-blue-100">
+      <h1 class="text-3xl font-bold text-blue-900 mb-6">{{ product.name }} Detail</h1>
+
+      <!-- Card para mostrar el producto -->
+      <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+        <div class="flex flex-col items-center">
+          <img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}" class="h-48 w-48 object-cover rounded-md border border-gray-300 shadow-sm mb-4" />
+          <p class="text-lg font-semibold text-gray-900 mb-2">
+            <span class="text-gray-600">ID:</span> {{ product.id }}
+          </p>
+          <p class="text-xl font-bold text-gray-800 mb-2">{{ product.name }}</p>
+          <p class="text-gray-700 text-center">{{ product.description }}</p>
+          <p class="text-lg font-bold text-green-600 mt-4">€{{ product.price }}</p>
+        </div>
+      </div>
+
+      <!-- Botones de acciones -->
+      <div class="flex items-center justify-center gap-4 mt-6">
+        <a href="#" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">Edit Product</a>
+
+        <form action="#" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+          <input type="hidden" name="_token" value="{{ csrf_token('delete_product_' ~ product.id) }}" />
+          <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition">Delete Product</button>
+        </form>
+
+        <a href="{{ path('app_product') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow hover:bg-gray-700 transition">Back to list</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
