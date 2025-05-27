@@ -40,4 +40,18 @@ class ProductRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findBySearchAndCategory(?string $query, ?int $categoryId): array
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+        if ($query) {
+            $queryBuilder->andWhere('p.name LIKE :query')->setParameter('query', '%' . $query . '%');
+        }
+
+        if ($categoryId) {
+            $queryBuilder->andWhere('p.category = :categoryId')->setParameter('categoryId', $categoryId);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }
