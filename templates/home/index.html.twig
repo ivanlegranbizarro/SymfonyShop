@@ -7,14 +7,17 @@
 {% block body %}
   <div class="container mx-auto p-4">
     <form method="get" action="{{ path('app_home') }}" class="mb-4 relative">
-      <input type="text" name="q" placeholder="Search products" value="" class="w-full p-2 border border-gray-300 rounded" />
+      <input type="text" name="q" placeholder="Search products" value="{{ app.request.query.get('q') }}" class="w-full p-2 border border-gray-300 rounded" />
       <button type="submit" class="absolute right-0 top-0 mt-2 mr-2">🔍</button>
     </form>
     <div class="mb-4">
-      <h3>Filter by Category</h3>
+      <h3 class="font-semibold mb-2">Filter by Category</h3>
+      <div class="flex space-x-2">
+        {% for category in products.category %}
+          <a href="{{ path('app_home', { category: category.id }) }}" class="">{{ category.name }}</a>
+        {% endfor %}
+      </div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-
-    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
   </div>
 {% endblock %}
